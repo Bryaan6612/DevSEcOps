@@ -1,0 +1,71 @@
+name: GOAT Compile
+ 
+on:
+  push:
+    branches:
+      - main
+ 
+jobs:
+  integration:
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+      actions: read
+      contents: read
+ 
+    steps:
+      - name: "Obteniendo ultima version del codigo"
+        uses: actions/checkout@v3
+ 
+      - name: "Instalacion Java"
+        uses: actions/setup-java@v3
+        with:
+          distribution: "temurin"
+          java-version: "17"
+ 
+      - name: "Compilacion"
+        run: ./mvnw clean install
+ 
+      - name: "Verificar paquete"
+        run: ls -ltra target
+ 
+      - name: "Dependency Check"
+        uses: dependency-check/Dependency-Check_Action@main
+        env:
+          JAVA_HOME: /opt/jdk
+        id: Depcheck
+        with:
+          project: 'WebGoat'
+          path: '.'
+          format: 'HTML'
+          out: 'reports'
+ 
+      - name: "Verificar reporte"
+        run: ls -ltra reports
+ 
+      - name: "Imagen Docker"
+        run: "docker build -t prueba:latest ./"
+      
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: 'prueba'
+          format: 'table'
+          exit-code: '1'
+          ignore-unfixed: true
+          timeout: 10m0s
+        continue-on-error: true
+         
+
+      - name: "Muestra imagenes de docker"
+        run: docker images
+      
+      - name: "Inicia container "
+        run: docker run -d -p 127.0.0.1:8080:8080 -p 127.0.0.1:9090:9090 --name elchido prueba
+      
+      - name: "Muestra contenedores"
+        run: docker ps -a
+
+      - name: "Corre container"
+        run: docker start elchido
+
