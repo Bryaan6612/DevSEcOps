@@ -55,23 +55,32 @@ jobs:
         run: |
           terraform -chdir=./Terraform/ init
           terraform -chdir=./Terraform/ validate
-          terraform -chdir=./Terraform/ plan -out plan
-          terraform -chdir=./Terraform/ apply plan
-          --query 'Reservations[].Instances[].[PublicIpAddress]' --output text
-        
-      
+          terraform -chdir=./Terraform/ plan -out tfplan
+          terraform -chdir=./Terraform/ apply tfplan >> results tfplan.txt
+          ip_webgoat=$(cat results_tfplan.txt | grep "My_ip = "| awk '{ print $3 }' | sed 's/*//g')
+          sed -i "s/IP/$ip_webgoat/g" ../Ansible/inventario
+
+
       - name: "Ejecutar Ansible"
+        env:
+          PRIVATE_KEY: ${{ secrets.llave2 }}
         run: |
+          sudo apt update
           sudo apt install ansible -y
           pip3 install "ansible-lint"
           cd Ansible/
+          echo "$PRIVATE_KEY" >> $HOME/key.pem
+          sudo chmod 600 $HOME/key.pem
+          export ANSIBLE_HOST_KEY_CHECKING=False
           ansible-playbook -i inventario server.yaml --become
+           
 
+      - name: "Destruir Infraestructura"
+        run: |
+          terraform -chdir=./Terraform/ plan -destroy -out tfplan
+          terraform -chdir=./Terraform/ apply tfplan
 
-      #- name: "Destruir Infraestructura"
-        #run: |
-          #terraform -chdir=./Terraform/ destroy
-
+          
 
 
 

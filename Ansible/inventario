@@ -1,8 +1,8 @@
 [aws]
-
+IP
 
 
 [all:vars]
 ansible user=ubuntu
-ansible_ssh_private_key_file=${{ secrets.llaves2 }}
+
 
