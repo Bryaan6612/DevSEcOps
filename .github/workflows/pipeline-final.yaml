@@ -57,7 +57,7 @@ jobs:
           terraform init
           terraform validate
           terraform plan -out tfplan
-          terraform apply tfplan >> results tfplan.txt
+          terraform apply tfplan >> results_tfplan.txt
           ip_webgoat=$(cat results_tfplan.txt | grep "My_ip = "| awk '{ print $3 }' | sed 's/*//g')
           sed -i "s/IP/$ip_webgoat/g" ../Ansible/inventario
 
