@@ -1,0 +1,69 @@
+name: GOAT Compile
+ 
+on:
+  push:
+    branches:
+      - main
+ 
+jobs:
+  integration:
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+      actions: read
+      contents: read
+ 
+    steps:
+      - name: "Obteniendo ultima version del codigo"
+        uses: actions/checkout@v3
+ 
+      - name: "Instalacion Java"
+        uses: actions/setup-java@v3
+        with:
+          distribution: "temurin"
+          java-version: "17"
+ 
+      - name: "Compilacion"
+        run: ./mvnw clean install
+ 
+      - name: "Verificar paquete"
+        run: ls -ltra target
+
+      - name: "Imagen Docker"
+        run: "docker build -t prueba:latest ./"
+
+      - name: "Muestra imagenes de docker"
+        run: docker images
+ 
+    steps:
+      - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+      aws-access-key-id: ${{ secrets.key }}
+      aws-secret-access-key: ${{ secrets.access_key }}
+      aws-region: ${{ secrets.region }} 
+ 
+      - name: "Imagen ECR"
+        run: |
+        aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/p5y7p7o2
+        docker build -t bryan .
+        docker tag bryan:latest public.ecr.aws/p5y7p7o2/bryan:latests
+        docker push public.ecr.aws/p5y7p7o2/bryan:latest
+      
+      - name: "Acondicionar Terraform"
+        run: |
+        terraform init
+        terraform validate
+        terraform apply
+
+      
+
+
+
+
+
+
+
+
+
+
