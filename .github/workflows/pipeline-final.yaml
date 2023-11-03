@@ -53,10 +53,10 @@ jobs:
       
       - name: "Acondicionar Terraform"
         run: |
-          terraform -chdir=/home/Desktop/DevSecOps/ init
-          terraform -chdir=/home/Desktop/DevSecOps/ validate
-          terraform -chdir=/home/Desktop/DevSecOps/ plan
-          terraform -chdir=/home/Desktop/DevSecOps/ apply
+          terraform -chdir=/home/bryan6612/Desktop/DevSecOps init
+          terraform -chdir=/home/bryan6612/Desktop/DevSecOps validate
+          terraform -chdir=/home/bryan6612/Desktop/DevSecOps plan
+          terraform -chdir=/home/bryan6612/Desktop/DevSecOps apply
 
       
 
