@@ -55,7 +55,7 @@ jobs:
         run: |
           terraform -chdir=./Terraform/ init
           terraform -chdir=./Terraform/ validate
-          terraform -chdir=./Terraform/ plan -out
+          terraform -chdir=./Terraform/ plan -out plan
           terraform -chdir=./Terraform/ apply plan
 
       
