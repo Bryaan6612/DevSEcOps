@@ -40,9 +40,9 @@ jobs:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
-        aws-access-key-id: ${{ secrets.key }}
-        aws-secret-access-key: ${{ secrets.access_key }}
-        aws-region: ${{ secrets.region }} 
+          aws-access-key-id: ${{ secrets.key }}
+          aws-secret-access-key: ${{ secrets.access_key }}
+          aws-region: ${{ secrets.region }} 
  
       - name: "Imagen ECR"
         run: |
