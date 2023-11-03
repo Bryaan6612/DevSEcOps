@@ -23,8 +23,8 @@ jobs:
           distribution: "temurin"
           java-version: "17"
  
-      - name: "Compilacion"
-        run: ./mvnw clean install
+      #- name: "Compilacion"
+       # run: ./mvnw clean install
  
       - name: "Verificar paquete"
         run: ls -ltra target
@@ -61,17 +61,15 @@ jobs:
           ip_webgoat=$(cat results_tfplan.txt | grep "My_ip = "| awk '{ print $3 }' | sed 's/*//g')
           sed -i "s/IP/$ip_webgoat/g" ../Ansible/inventario
 
-
       - name: "Ejecutar Ansible"
         env:
           PRIVATE_KEY: ${{ secrets.LLAVE2 }}
         run: |
           sudo apt update
           sudo apt install -y ansible
-          pip3 install "ansible-lint"
           cd Ansible
           echo "$PRIVATE_KEY" >> $HOME/key.pem
-          sudo chmod 600 $HOME/key.pem
+          chmod 600 $HOME/key.pem
           export ANSIBLE_HOST_KEY_CHECKING=False
           ansible-playbook -i inventario server.yaml --become --private-key $HOME/key.pem
         continue-on-error: true
