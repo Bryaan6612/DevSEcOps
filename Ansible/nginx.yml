@@ -1,0 +1,25 @@
+- hosts: aws
+  remote_user: ubuntu
+  become: True
+  tasks:
+ 
+    - name: Update and upgrade apt packages
+      apt:
+        upgrade: yes
+        update_cache: yes
+        cache_valid_time: 86400
+ 
+    - name: Install nginx
+      apt:
+        name: nginx
+        state: present
+ 
+    - name: Create default index page
+      copy:
+        dest: /var/www/html/index.html
+        content: "Howdy from {{ ansible_hostname }}"
+ 
+    - name: Restart nginx
+      service:
+        name: nginx
+        state: restarted

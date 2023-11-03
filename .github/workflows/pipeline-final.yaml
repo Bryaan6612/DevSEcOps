@@ -57,11 +57,20 @@ jobs:
           terraform -chdir=./Terraform/ validate
           terraform -chdir=./Terraform/ plan -out plan
           terraform -chdir=./Terraform/ apply plan
-
+          --query 'Reservations[].Instances[].[PublicIpAddress]' --output text
+        
       
+      - name: "Ejecutar Ansible"
+        run: |
+          sudo apt install ansible -y
+          pip3 install "ansible-lint"
+          cd Ansible/
+          ansible-playbook -i inventario server.yaml --become
 
 
-
+      #- name: "Destruir Infraestructura"
+        #run: |
+          #terraform -chdir=./Terraform/ destroy
 
 
 
