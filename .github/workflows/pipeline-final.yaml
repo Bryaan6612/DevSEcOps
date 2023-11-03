@@ -48,7 +48,7 @@ jobs:
         run: |
           aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/p5y7p7o2
           docker build -t bryan .
-          docker tag bryan:latest public.ecr.aws/p5y7p7o2/bryan:latests
+          docker tag bryan:latest public.ecr.aws/p5y7p7o2/bryan:latest
           docker push public.ecr.aws/p5y7p7o2/bryan:latest
       
       - name: "Acondicionar Terraform"
