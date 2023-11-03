@@ -67,13 +67,14 @@ jobs:
           LLAVE2: ${{ secrets.LLAVE2 }}
         run: |
           sudo apt update
-          sudo apt install ansible -y
+          sudo apt install -y ansible
           pip3 install "ansible-lint"
           cd Ansible/
           echo "$LLAVE2" >> $HOME/key.pem
           sudo chmod 600 $HOME/key.pem
           export ANSIBLE_HOST_KEY_CHECKING=False
           ansible-playbook -i inventario server.yaml --become --private-key $HOME/key.pem
+        continue-on-error: true
           
            
 
