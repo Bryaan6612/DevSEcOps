@@ -50,6 +50,8 @@ jobs:
           docker build -t bryan .
           docker tag bryan:latest public.ecr.aws/p5y7p7o2/bryan:latest
           docker push public.ecr.aws/p5y7p7o2/bryan:latest
+
+  
       
       - name: "Acondicionar Terraform"
         run: |
@@ -61,18 +63,33 @@ jobs:
           ip_webgoat=$(cat results_tfplan.txt | grep "My_ip = "| awk '{ print $3 }' | sed 's/*//g')
           sed -i "s/IP/$ip_webgoat/g" ../Ansible/inventario
 
-      - name: "Ansible"
-        env:
-          ANSIBLE_KEY: ${{ secrets.LLAVES2 }}
-        run: |
-          sudo apt update
-          sudo apt install -y ansible
-          cd Ansible/
-          echo "$ANSIBLE_KEY" >> $HOME/key.pem
-          sudo chmod 600 $HOME/key.pem
-          export ANSIBLE_HOST_KEY_CHECKING=False
-          ansible-playbook -i inventario server.yaml --become --private-key $HOME/key.pem
+      - name: "Install Python"
+        run: actions/setup-python@v4
+        with:
+          python-version: 3.8
+
+      - name: Test with Checkov
+        id: checkov
+        uses: bridgecrewio/checkov-action@master
+        with:
+          directory: Terraform
+          framework: terraform 
+          output_format: sarif
+          output_file_path: reports/reportes.sarif
         continue-on-error: true
+
+      #- name: "Ansible"
+        #env:
+          #ANSIBLE_KEY: ${{ secrets.LLAVES2 }}
+        #run: |
+          #sudo apt update
+          #sudo apt install -y ansible
+          #cd Ansible/
+          #echo "$ANSIBLE_KEY" >> $HOME/key.pem
+          #sudo chmod 600 $HOME/key.pem
+          #export ANSIBLE_HOST_KEY_CHECKING=False
+          #ansible-playbook -i inventario server.yaml --become --private-key $HOME/key.pem
+        #continue-on-error: true
 
 
 
