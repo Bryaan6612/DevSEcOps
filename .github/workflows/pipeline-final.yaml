@@ -100,8 +100,8 @@ jobs:
  
       - name: "Ejecutar arachni"
         run: |
-              var_IP=$(terraform -chdir=terraform/ output | grep "My_ip =" | tail -1 | cut -d '"' -f 2)
-              ./arachni-1.6.1.3-0.6.1.1/bin/arachni --check=* http://$var_IP:8080/WebGoat/login
+              ip_webgoat=$(terraform -chdir=Terraform/ output | grep "My_ip =" | tail -1 | cut -d '"' -f 2)
+              ./arachni-1.6.1.3-0.6.1.1/bin/arachni --check=* http://$ip_webgoat:8080/WebGoat/login
 
 
 
