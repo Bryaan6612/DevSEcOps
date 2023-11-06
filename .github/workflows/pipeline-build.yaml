@@ -100,7 +100,7 @@ jobs:
         uses: actions/upload-artifact@master
         with:
            name: Depcheck report
-           path: ${{github.workspace}}/reportsS
+           path: ${{github.workspace}}/reports
 
     # Initializes the CodeQL tools for scanning.
       - name: Initialize CodeQL
