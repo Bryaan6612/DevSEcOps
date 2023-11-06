@@ -74,8 +74,8 @@ jobs:
         with:
           directory: Terraform
           framework: terraform 
-          output_format: sarif
-          output_file_path: reports/reportes.sarif
+          output_format: sarif, cli
+          output_file_path: console,results.sarif
         continue-on-error: true
 
       - name: "Ansible"

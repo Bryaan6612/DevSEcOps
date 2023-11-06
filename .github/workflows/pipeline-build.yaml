@@ -29,27 +29,32 @@ jobs:
       - name: "Verificar paquete"
         run: ls -ltra target
  
-
-    steps:
-      - name: Configure AWS Credentials
-      uses: aws-actions/configure-aws-credentials@v1
-      with:
-      aws-access-key-id: ${{ secrets.key }}
-      aws-secret-access-key: ${{ secrets.access_key }}
-      aws-region: ${{ secrets.region }} 
+      - name: "Dependency Check"
+        uses: dependency-check/Dependency-Check_Action@main
+        env:
+          JAVA_HOME: /opt/jdk
+        id: Depcheck
+        with:
+          project: 'WebGoat'
+          path: '.'
+          format: 'HTML'
+          out: 'reports'
+ 
+      - name: "Verificar reporte"
+        run: ls -ltra reports
  
       - name: "Imagen Docker"
         run: "docker build -t prueba:latest ./"
       
-#      - name: Run Trivy vulnerability scanner
-#        uses: aquasecurity/trivy-action@master
-#        with:
-#         image-ref: 'prueba'
-#          format: 'table'
-#         exit-code: '1'
-#          ignore-unfixed: true
-#          timeout: 10m0s
-#        continue-on-error: true
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+         image-ref: 'prueba'
+         format: 'table'
+         exit-code: '1'
+         ignore-unfixed: true
+         timeout: 10m0s
+        continue-on-error: true
          
 
       - name: "Muestra imagenes de docker"
@@ -72,3 +77,15 @@ jobs:
       - name: "Muestra contenedores"
         run: docker ps -a
 
+    
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+    # Initializes the CodeQL tools for scanning.
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v1
+        with:
+          languages: ${{ matrix.language }}
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v1
