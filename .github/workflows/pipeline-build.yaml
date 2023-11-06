@@ -97,10 +97,10 @@ jobs:
       
     
       - name: Upload Test results
-        uses: actions/upload-artifact@master
+        uses: github/codeql-action/upload-sarif@v2
         with:
            name: Depcheck report
-           path: ${{github.workspace}}/reports
+           path: ${{github.workspace}}/reporte
 
     # Initializes the CodeQL tools for scanning.
       - name: Initialize CodeQL
