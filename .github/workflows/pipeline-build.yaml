@@ -37,7 +37,7 @@ jobs:
         with:
           project: 'WebGoat'
           path: '.'
-          format: 'HTML'
+          format: 'SARIF'
           out: 'reports'
  
       - name: "Verificar reporte"
@@ -84,7 +84,7 @@ jobs:
           scan-type: 'fs'
           security-checks: 'vuln,secret,config'
           ignore-unfixed: true
-          format: 'SARIF'
+          format: 'sarif'
           output: 'trivy-results.sarif'
           severity: 'CRITICAL'
 
