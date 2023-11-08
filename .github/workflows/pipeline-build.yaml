@@ -55,7 +55,7 @@ jobs:
 
       - name: "Subir Dep-Check scan a DefectDojo"
         run: |
-              python3 upload-report.py --file reportsDC/dependency-check-report.xml --type-scan 'Dependency Check Scan'
+              python3 upload_report.py --file reportsDC/dependency-check-report.xml --type-scan 'Dependency Check Scan'
 
  
       - name: "Imagen Docker"
@@ -106,14 +106,14 @@ jobs:
 
       - name: "Subir Trivy scan a DefectDojo"
         run: |
-              python3 upload-report.py --file trivy-results.json --type-scan 'Trivy Scan' 
+              python3 upload_report.py --file trivy-results.json --type-scan 'Trivy Scan' 
 
       - name: Upload Trivy scan results to GitHub Security tab
         uses: github/codeql-action/upload-sarif@v2
         with:
           sarif_file: 'trivy-results.sarif'
           category: 'code'
-          
+
 
         
     
