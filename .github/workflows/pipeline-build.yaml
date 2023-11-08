@@ -22,6 +22,16 @@ jobs:
         with:
           distribution: "temurin"
           java-version: "17"
+
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.8
+ 
+      - name: Actualizar piton
+        run: |
+              pip3 install requests
+      
  
       - name: "Compilacion"
         run: ./mvnw clean install
@@ -37,7 +47,7 @@ jobs:
         with:
           project: 'WebGoat'
           path: '.'
-          format: 'SARIF'
+          format: 'XML'
           out: 'reports'
  
       - name: "Verificar reporte"
@@ -63,13 +73,13 @@ jobs:
       - name: "Inicia container "
         run: docker run -d -p 127.0.0.1:8080:8080 -p 127.0.0.1:9090:9090 --name elchido prueba
 
-      - name: Ejecutar escaneo Arachnii
-        run: |
-          wget -O arachni.tar.gz https://github.com/Arachni/arachni/releases/download/v1.5.1/arachni-1.5.1-0.5.12-linux-x86_64.tar.gz
-          tar xvzf arachni.tar.gz
-          cd arachni-1.5.1-0.5.12/
-          var_IP=$(docker inspect elchido | grep "IPAddress" | tail -1 | cut -d '"' -f 4)
-          ./bin/arachni https://$var_IP:8080/WebGoat/login --output-verbose 1 --report-save-path=arachni-report.afr
+      #- name: Ejecutar escaneo Arachnii
+        #run: |
+          #wget -O arachni.tar.gz https://github.com/Arachni/arachni/releases/download/v1.5.1/arachni-1.5.1-0.5.12-linux-x86_64.tar.gz
+          #tar xvzf arachni.tar.gz
+          #cd arachni-1.5.1-0.5.12/
+          #var_IP=$(docker inspect elchido | grep "IPAddress" | tail -1 | cut -d '"' -f 4)
+          #./bin/arachni https://$var_IP:8080/WebGoat/login --output-verbose 1 --report-save-path=arachni-report.afr
  
       - name: "Corre container"
         run: docker start elchido
@@ -95,6 +105,11 @@ jobs:
           sarif_file: 'trivy-results.sarif'
           category: 'code'
       
+      - name: "Cargar reportes"
+        run: |
+          python3 "upload_report.py" -f ${{github.workspace}}/reports/dependency-check-report.xml -t "Dependecy Check Scan"  
+          python3 "Upload_report.py" -f ./results.json -t "Trivy Scan"
+
     
       - name: Upload Test results
         uses: github/codeql-action/upload-sarif@v2
