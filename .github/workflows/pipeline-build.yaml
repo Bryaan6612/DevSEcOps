@@ -108,7 +108,7 @@ jobs:
       - name: "Cargar reportes"
         run: |
           python3 "upload_report.py" -f ${{github.workspace}}/reports/dependency-check-report.xml -t "Dependecy Check Scan"  
-          python3 "Upload_report.py" -f ./results.json -t "Trivy Scan"
+          python3 "upload_report.py" -f ./results.json -t "Trivy Scan"
 
     
       - name: Upload Test results
