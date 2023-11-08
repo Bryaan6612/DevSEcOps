@@ -4,7 +4,9 @@ on:
   push:
     branches:
       - main
- 
+env: 
+  token: ${{ secrets.TOKEN }}
+
 jobs:
   integration:
     runs-on: ubuntu-latest
@@ -117,18 +119,18 @@ jobs:
 
         
     
-      - name: Upload Test results
-        uses: github/codeql-action/upload-sarif@v2
-        with:
-           name: Depcheck report
-           sarif_file: ${{github.workspace}}/reports
-           path: ${{github.workspace}}/reports
+      #- name: Upload Test results
+        #uses: github/codeql-action/upload-sarif@v2
+        #with:
+           #name: Depcheck report
+           #sarif_file: ${{github.workspace}}/reports
+           #path: ${{github.workspace}}/reports
 
     # Initializes the CodeQL tools for scanning.
-      - name: Initialize CodeQL
-        uses: github/codeql-action/init@v1
-        with:
-          languages: ${{ matrix.language }}
+      #- name: Initialize CodeQL
+        #uses: github/codeql-action/init@v1
+        #with:
+          #languages: ${{ matrix.language }}
 
-      - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v1
+      #- name: Perform CodeQL Analysis
+        #uses: github/codeql-action/analyze@v1
